@@ -1,17 +1,18 @@
 <?php
 
-namespace NotificationChannels\WhatsApp;
+declare(strict_types=1);
+
+namespace NotificationChannels\WhatsApp\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use Netflie\WhatsAppCloudApi\WhatsAppCloudApi;
 
-class WhatsAppServiceProvider extends ServiceProvider
+final class WhatsAppServiceProvider extends ServiceProvider
 {
-    /**
-     * Register the application services.
-     */
-    public function register()
+    public function register(): void
     {
+        $this->mergeConfigFrom(__DIR__.'/../../config/services.php', 'services');
+
         $config = [
             'from_phone_number_id' => $this->app->make('config')->get('services.whatsapp.from-phone-number-id'),
             'access_token' => $this->app->make('config')->get('services.whatsapp.token'),

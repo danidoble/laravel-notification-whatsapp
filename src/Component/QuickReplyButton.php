@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace NotificationChannels\WhatsApp\Component;
 
 class QuickReplyButton extends Button

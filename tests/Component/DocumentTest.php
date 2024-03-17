@@ -1,31 +1,35 @@
 <?php
 
-namespace NotificationChannels\WhatsApp\Test\Component;
-
 use NotificationChannels\WhatsApp\Component\Document;
 use NotificationChannels\WhatsApp\Exceptions\UnsupportedMediaValue;
-use PHPUnit\Framework\TestCase;
 
-final class DocumentTest extends TestCase
-{
-    /** @test */
-    public function the_document_link_is_a_supported_document()
-    {
-        $document = new Document('https://www.netflie.es/document.pdf');
-        $expectedValue = [
-            'type' => 'document',
-            'document' => [
-                'link' => 'https://www.netflie.es/document.pdf',
-            ],
-        ];
+test('the document link is a supported document', function () {
+    $document = new Document('https://www.netflie.es/document.pdf');
+    $expectedValue = [
+        'type' => 'document',
+        'document' => [
+            'link' => 'https://www.netflie.es/document.pdf',
+        ],
+    ];
 
-        $this->assertEquals($expectedValue, $document->toArray());
-    }
+    expect($document->toArray())->toEqual($expectedValue);
+});
 
-    /** @test */
-    public function the_document_link_is_a_unsupported_document()
-    {
-        $this->expectException(UnsupportedMediaValue::class);
+test('the document link is a supported document with filename', function () {
+    $document = new Document('https://www.netflie.es/document.pdf', 'my-document');
+    $expectedValue = [
+        'type' => 'document',
+        'document' => [
+            'link' => 'https://www.netflie.es/document.pdf',
+            'filename' => 'my-document',
+        ],
+    ];
+
+    expect($document->toArray())->toEqual($expectedValue);
+});
+
+test('the document link is a unsupported document', function () {
+    expect(function () {
         new Document('https://www.netflie.es/document.doc');
-    }
-}
+    })->toThrow(UnsupportedMediaValue::class);
+});

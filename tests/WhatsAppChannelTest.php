@@ -1,9 +1,6 @@
 <?php
 
-namespace NotificationChannels\WhatsApp\Test;
-
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Notifications\Notification;
 use Netflie\WhatsAppCloudApi\Http\ClientHandler;
 use Netflie\WhatsAppCloudApi\Http\RawResponse;
 use Netflie\WhatsAppCloudApi\WhatsAppCloudApi;
@@ -12,131 +9,109 @@ use NotificationChannels\WhatsApp\Test\Support\DummyNotifiable;
 use NotificationChannels\WhatsApp\Test\Support\DummyNotification;
 use NotificationChannels\WhatsApp\Test\Support\DummyNotificationWithoutRecipient;
 use NotificationChannels\WhatsApp\WhatsAppChannel;
-use PHPUnit\Framework\TestCase;
 
-final class WhatsAppChannelTest extends TestCase
-{
-    private ClientHandler $httpClient;
+beforeEach(function () {
+    $httpClient = \Mockery::mock(ClientHandler::class);
 
-    private WhatsAppCloudApi $whatsapp;
+    $whatsapp = new WhatsAppCloudApi([
+        'from_phone_number_id' => '34676202545',
+        'access_token' => 'super-secret',
+        'client_handler' => $httpClient,
+    ]);
+    $channel = new WhatsAppChannel($whatsapp);
 
-    private WhatsAppChannel $channel;
+    // @phpstan-ignore-next-line
+    $this->whatsapp = $whatsapp;
+    // @phpstan-ignore-next-line
+    $this->channel = $channel;
+    // @phpstan-ignore-next-line
+    $this->httpClient = $httpClient;
+});
 
-    public function setUp(): void
-    {
-        parent::setUp();
+it('can send a notification', function () {
+    $notifiable = Mockery::mock(Notifiable::class);
+    $notification = new DummyNotification();
 
-        $this->httpClient = \Mockery::mock(ClientHandler::class);
+    $body = [
+        'messaging_product' => 'whatsapp',
+        'recipient_type' => 'individual',
+        'to' => $notification->toWhatsApp($notifiable)->recipient(),
+        'type' => 'template',
+        'template' => [
+            'name' => $notification->toWhatsApp($notifiable)->configuredName(),
+            'language' => ['code' => $notification->toWhatsApp($notifiable)->configuredLanguage()],
+            'components' => [],
+        ],
+    ];
+    $headers = [
+        'Authorization' => 'Bearer super-secret',
+        'Content-Type' => 'application/json',
+    ];
+    $expectedResponse = new RawResponse($headers, json_encode($body), 200);
 
-        $this->whatsapp = new WhatsAppCloudApi([
-            'from_phone_number_id' => '34676202545',
-            'access_token' => 'super-secret',
-            'client_handler' => $this->httpClient,
-        ]);
-        $this->channel = new WhatsAppChannel($this->whatsapp);
-    }
+    // @phpstan-ignore-next-line
+    $response = sendMockNotification($this, $notifiable, $notification, $expectedResponse);
 
-    /** @test */
-    public function it_can_send_a_notification()
-    {
-        $notifiable = $this->getMockForTrait(Notifiable::class);
-        $notification = new DummyNotification();
+    expect($response->body())->toEqual(json_encode($body))
+        ->and($response->httpStatusCode())->toEqual(200)
+        ->and($notification->toWhatsApp($notifiable)->recipient())->not->toBeEmpty()
+        ->and($notification->toWhatsApp($notifiable)->configuredName())->not->toBeEmpty()
+        ->and($notification->toWhatsApp($notifiable)->configuredLanguage())->not->toBeEmpty();
+});
 
-        $body = [
-            'messaging_product' => 'whatsapp',
-            'recipient_type' => 'individual',
-            'to' => $notification->toWhatsApp($notifiable)->recipient(),
-            'type' => 'template',
-            'template' => [
-                'name' => $notification->toWhatsApp($notifiable)->configuredName(),
-                'language' => ['code' => $notification->toWhatsApp($notifiable)->configuredLanguage()],
-                'components' => [],
-            ],
-        ];
-        $headers = [
-            'Authorization' => 'Bearer super-secret',
-            'Content-Type' => 'application/json',
-        ];
-        $expectedResponse = new RawResponse($headers, json_encode($body), 200);
+it('can send a notification if notifiable provide a recipient from route', function () {
+    $notifiable = new DummyNotifiable();
+    $notification = new DummyNotificationWithoutRecipient();
 
-        $response = $this->sendMockNotification($notifiable, $notification, $expectedResponse);
+    $body = [
+        'messaging_product' => 'whatsapp',
+        'recipient_type' => 'individual',
+        'to' => $notifiable->routeNotificationForWhatsApp(),
+        'type' => 'template',
+        'template' => [
+            'name' => $notification->toWhatsApp($notifiable)->configuredName(),
+            'language' => ['code' => $notification->toWhatsApp($notifiable)->configuredLanguage()],
+            'components' => [],
+        ],
+    ];
+    $headers = [
+        'Authorization' => 'Bearer super-secret',
+        'Content-Type' => 'application/json',
+    ];
+    $expectedResponse = new RawResponse($headers, json_encode($body), 200);
 
-        $this->assertEquals(json_encode($body), $response->body());
-        $this->assertEquals(200, $response->httpStatusCode());
-        $this->assertNotEmpty($notification->toWhatsApp($notifiable)->recipient());
-        $this->assertNotEmpty($notification->toWhatsApp($notifiable)->configuredName());
-        $this->assertNotEmpty($notification->toWhatsApp($notifiable)->configuredLanguage());
-    }
+    // @phpstan-ignore-next-line
+    $response = sendMockNotification($this, $notifiable, $notification, $expectedResponse);
 
-    /** @test */
-    public function it_can_send_a_notification_if_notifiable_provide_a_recipient_from_route()
-    {
-        $notifiable = new DummyNotifiable();
-        $notification = new DummyNotificationWithoutRecipient();
+    expect($response->body())->toEqual(json_encode($body))
+        ->and($response->httpStatusCode())->toEqual(200)
+        ->and($body['to'])->not->toBeEmpty()
+        ->and($notification->toWhatsApp($notifiable)->configuredName())->not->toBeEmpty()
+        ->and($notification->toWhatsApp($notifiable)->configuredLanguage())->not->toBeEmpty();
+});
 
-        $body = [
-            'messaging_product' => 'whatsapp',
-            'recipient_type' => 'individual',
-            'to' => $notifiable->routeNotificationForWhatsApp(),
-            'type' => 'template',
-            'template' => [
-                'name' => $notification->toWhatsApp($notifiable)->configuredName(),
-                'language' => ['code' => $notification->toWhatsApp($notifiable)->configuredLanguage()],
-                'components' => [],
-            ],
-        ];
-        $headers = [
-            'Authorization' => 'Bearer super-secret',
-            'Content-Type' => 'application/json',
-        ];
-        $expectedResponse = new RawResponse($headers, json_encode($body), 200);
+it('does not send a notification if the notifiable does not provide a recipient', function () {
+    $notifiable = Mockery::mock(Notifiable::class);
+    $notification = new DummyNotificationWithoutRecipient();
 
-        $response = $this->sendMockNotification($notifiable, $notification, $expectedResponse);
+    $httpClient = \Mockery::mock(ClientHandler::class);
+    $httpClient->shouldNotHaveReceived('send');
 
-        $this->assertEquals(json_encode($body), $response->body());
-        $this->assertEquals(200, $response->httpStatusCode());
-        $this->assertNotEmpty($body['to']);
-        $this->assertNotEmpty($notification->toWhatsApp($notifiable)->configuredName());
-        $this->assertNotEmpty($notification->toWhatsApp($notifiable)->configuredLanguage());
-    }
+    // @phpstan-ignore-next-line
+    $response = $this->channel->send($notifiable, $notification);
 
-    /** @test */
-    public function it_does_not_send_a_notification_if_the_notifiable_does_not_provide_a_recipient()
-    {
-        $notifiable = $this->getMockForTrait(Notifiable::class);
-        $notification = new DummyNotificationWithoutRecipient();
+    expect($response)->toBeNull();
+});
 
-        $httpClient = \Mockery::mock(ClientHandler::class);
-        $httpClient->shouldNotHaveReceived('send');
+test('send notification failed', function () {
+    $notifiable = Mockery::mock(Notifiable::class);
+    $notification = new DummyNotification();
+    $expectedResponse = new RawResponse([], json_encode(['error' => true]), 500);
 
-        $response = $this->channel->send($notifiable, $notification);
+    // @phpstan-ignore-next-line
+    $this->expectException(CouldNotSendNotification::class);
+    // @phpstan-ignore-next-line
+    $response = sendMockNotification($this, $notifiable, $notification, $expectedResponse);
 
-        $this->assertNull($response);
-    }
-
-    /** @test */
-    public function send_notification_failed()
-    {
-        $notifiable = $this->getMockForTrait(Notifiable::class);
-        $notification = new DummyNotification();
-        $expectedResponse = new RawResponse([], json_encode(['error' => true]), 500);
-
-        $this->expectException(CouldNotSendNotification::class);
-        $response = $this->sendMockNotification($notifiable, $notification, $expectedResponse);
-
-        $this->assertNull($response);
-    }
-
-    private function sendMockNotification(
-        $notifiable,
-        Notification $notification,
-        RawResponse $expectedResponse
-    ) {
-        $this->httpClient
-            ->shouldReceive('postJsonData')
-            ->once()
-            ->andReturns($expectedResponse);
-
-        return $this->channel->send($notifiable, $notification);
-    }
-}
+    expect($response)->toBeNull();
+});

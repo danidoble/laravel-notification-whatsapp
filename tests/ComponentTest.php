@@ -1,73 +1,57 @@
 <?php
 
-namespace NotificationChannels\WhatsApp\Test;
-
 use NotificationChannels\WhatsApp\Component;
-use PHPUnit\Framework\TestCase;
 
-final class ComponentTest extends TestCase
-{
-    /** @test */
-    public function it_can_return_a_currency_component()
-    {
-        $component = Component::currency(10, 'EUR');
+it('can return a currency component', function () {
+    $component = Component::currency(10, 'EUR');
 
-        $this->assertInstanceOf(Component\Currency::class, $component);
-    }
+    expect($component)->toBeInstanceOf(Component\Currency::class);
+});
 
-    /** @test */
-    public function it_can_return_a_datetime_component()
-    {
-        $component = Component::dateTime(new \DateTimeImmutable());
+it('can return a datetime component', function () {
+    $component = Component::dateTime(new \DateTimeImmutable());
 
-        $this->assertInstanceOf(Component\DateTime::class, $component);
-    }
+    expect($component)->toBeInstanceOf(Component\DateTime::class);
+});
 
-    /** @test */
-    public function it_can_return_a_document_component()
-    {
-        $component = Component::document('https://www.netflie.es/my_document.pdf');
+it('can return a document component', function () {
+    $component = Component::document('https://www.netflie.es/my_document.pdf');
 
-        $this->assertInstanceOf(Component\Document::class, $component);
-    }
+    expect($component)->toBeInstanceOf(Component\Document::class);
+});
 
-    /** @test */
-    public function it_can_return_an_image_component()
-    {
-        $component = Component::image('https://www.netflie.es/my_image.png');
+it('can return an image component', function () {
+    $component = Component::image('https://www.netflie.es/my_image.png');
 
-        $this->assertInstanceOf(Component\Image::class, $component);
-    }
+    expect($component)->toBeInstanceOf(Component\Image::class);
+});
 
-    /** @test */
-    public function it_can_return_a_text_component()
-    {
-        $component = Component::text('Hey there!');
+it('can return a text component', function () {
+    $component = Component::text('Hey there!');
 
-        $this->assertInstanceOf(Component\Text::class, $component);
-    }
+    expect($component)->toBeInstanceOf(Component\Text::class);
+});
 
-    /** @test */
-    public function it_can_return_a_video_component()
-    {
-        $component = Component::video('https://www.netflie.es/my_image.webm');
+it('can return a video component', function () {
+    $component = Component::video('https://www.netflie.es/my_image.webm');
 
-        $this->assertInstanceOf(Component\Video::class, $component);
-    }
+    expect($component)->toBeInstanceOf(Component\Video::class);
+});
 
-    /** @test */
-    public function it_can_return_a_url_button_component()
-    {
-        $component = Component::urlButton(['event/01']);
+it('can return a url button component', function () {
+    $component = Component::urlButton(['event/01']);
 
-        $this->assertInstanceOf(Component\UrlButton::class, $component);
-    }
+    expect($component)->toBeInstanceOf(Component\UrlButton::class);
+});
 
-    /** @test */
-    public function it_can_return_a_quick_reply_button_component()
-    {
-        $component = Component::quickReplyButton(['Thanks for your message!']);
+it('can return a quick reply button component', function () {
+    $component = Component::quickReplyButton(['Thanks for your message!']);
 
-        $this->assertInstanceOf(Component\QuickReplyButton::class, $component);
-    }
-}
+    expect($component)->toBeInstanceOf(Component\QuickReplyButton::class);
+});
+
+it('can return a flow button component', function () {
+    $component = Component::flowButton('token', ['test' => 'example']);
+
+    expect($component)->toBeInstanceOf(Component\FlowButton::class);
+});

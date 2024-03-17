@@ -1,6 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace NotificationChannels\WhatsApp;
+
+use NotificationChannels\WhatsApp\Exceptions\UnsupportedMediaValue;
 
 class Component
 {
@@ -17,9 +21,12 @@ class Component
         return new Component\DateTime($dateTime, $format);
     }
 
-    public static function document(string $link): Component\Document
+    /**
+     * @throws UnsupportedMediaValue
+     */
+    public static function document(string $link, ?string $filename = null): Component\Document
     {
-        return new Component\Document($link);
+        return new Component\Document($link, $filename);
     }
 
     public static function image(string $link): Component\Image
@@ -45,5 +52,10 @@ class Component
     public static function quickReplyButton(array $payloads): Component\QuickReplyButton
     {
         return new Component\QuickReplyButton($payloads);
+    }
+
+    public static function flowButton(string $token, array $data): Component\FlowButton
+    {
+        return new Component\FlowButton($token, $data);
     }
 }

@@ -1,57 +1,98 @@
 {
-    "name": "netflie/laravel-notification-whatsapp",
-    "description": "Laravel notification driver for WhatsApp",
-    "homepage": "https://github.com/netflie/laravel-notification-whatsapp",
-    "license": "MIT",
-    "keywords": [
-        "whatsapp notification",
-        "laravel",
-        "whatsapp",
-        "notification",
-        "whatsapp notifications channel"
-      ],
-    "authors": [
-        {
-            "name": "Álex Albarca",
-            "email": "alex@netflie.es",
-            "homepage": "https://www.netflie.es",
-            "role": "Developer"
-        }
-    ],
-    "require": {
-        "php": ">=7.4",
-        "illuminate/notifications": "~8.0 || ~9.0 || ~10.0",
-        "illuminate/support": "~8.0 || ~9.0 || ~10.0",
-        "netflie/whatsapp-cloud-api": "^2.0.0"
+  "name": "danidoble/laravel-notification-whatsapp",
+  "description": "WhatsApp notification channel for Laravel",
+  "type": "library",
+  "license": "MIT",
+  "version": "v2.0.0",
+  "keywords": [
+    "whatsapp notification",
+    "laravel",
+    "whatsapp",
+    "notification",
+    "whatsapp notifications channel"
+  ],
+  "authors": [
+    {
+      "name": "Álex Albarca",
+      "email": "alex@netflie.es",
+      "homepage": "https://www.netflie.es",
+      "role": "Developer"
     },
-    "require-dev": {
-        "mockery/mockery": "^1.0",
-        "phpstan/phpstan": "^1.9",
-        "phpunit/phpunit": "^9.0"
-    },
-    "autoload": {
-        "psr-4": {
-            "NotificationChannels\\WhatsApp\\": "src"
-        }
-    },
-    "autoload-dev": {
-        "psr-4": {
-            "NotificationChannels\\WhatsApp\\Test\\": "tests"
-        }
-    },
-    "extra": {
-        "laravel": {
-          "providers": [
-            "NotificationChannels\\WhatsApp\\WhatsAppServiceProvider"
-          ]
-        }
-      },
-    "scripts": {
-        "test": "phpunit",
-        "test:coverage": "phpunit --coverage-text --coverage-clover=coverage.clover",
-        "analyse": "phpstan analyse"
-    },
-    "config": {
-        "sort-packages": true
+    {
+      "name": "Danidoble",
+      "email": "ddanidoble@gmail.com",
+      "role": "Developer",
+      "homepage": "https://danidoble.com"
     }
+  ],
+  "require": {
+    "php": "^8.1",
+    "illuminate/notifications": "^10.0|^11.0",
+    "illuminate/support": "^10.0|^11.0",
+    "netflie/whatsapp-cloud-api": "^2.0.0"
+  },
+  "require-dev": {
+    "laravel/pint": "^1.14",
+    "orchestra/testbench": "^8.21|^v9.0.0",
+    "pestphp/pest": "^2.34"
+  },
+  "conflict": {
+    "netflie/laravel-notification-whatsapp": "*"
+  },
+  "autoload": {
+    "psr-4": {
+      "NotificationChannels\\WhatsApp\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "NotificationChannels\\WhatsApp\\Test\\": "tests/",
+      "Workbench\\App\\": "workbench/app/",
+      "Workbench\\Database\\Factories\\": "workbench/database/factories/",
+      "Workbench\\Database\\Seeders\\": "workbench/database/seeders/"
+    }
+  },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "NotificationChannels\\WhatsApp\\Providers\\WhatsAppServiceProvider"
+      ]
+    }
+  },
+  "minimum-stability": "dev",
+  "prefer-stable": true,
+  "config": {
+    "sort-packages": true,
+    "preferred-install": "dist",
+    "optimize-autoloader": true,
+    "allow-plugins": {
+      "pestphp/pest-plugin": true
+    }
+  },
+  "scripts": {
+    "post-autoload-dump": [
+      "@clear",
+      "@prepare"
+    ],
+    "clear": "@php vendor/bin/testbench package:purge-skeleton --ansi",
+    "prepare": "@php vendor/bin/testbench package:discover --ansi",
+    "build": "@php vendor/bin/testbench workbench:build --ansi",
+    "serve": [
+      "Composer\\Config::disableProcessTimeout",
+      "@build",
+      "@php vendor/bin/testbench serve"
+    ],
+    "lint": [
+      "@php vendor/bin/phpstan analyse src tests"
+    ],
+    "pint": [
+      "@php vendor/bin/pint"
+    ],
+    "test": [
+      "@php vendor/bin/pest"
+    ],
+    "pest": [
+      "@php vendor/bin/pest"
+    ]
+  }
 }

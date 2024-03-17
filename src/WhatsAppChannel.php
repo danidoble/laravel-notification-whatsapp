@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace NotificationChannels\WhatsApp;
 
 use Illuminate\Notifications\Notification;
@@ -10,22 +12,20 @@ use NotificationChannels\WhatsApp\Exceptions\CouldNotSendNotification;
 
 class WhatsAppChannel
 {
-    /*
-     * HTTP WhatsApp Cloud API wrapper
+    /**
+     * @param  WhatsAppCloudApi  $whatsapp  HTTP WhatsApp Cloud API wrapper
      */
-    private WhatsAppCloudApi $whatsapp;
-
-    public function __construct(WhatsAppCloudApi $whatsapp)
+    public function __construct(private readonly WhatsAppCloudApi $whatsapp)
     {
-        $this->whatsapp = $whatsapp;
     }
 
     /**
      * Send the given notification.
+     *
+     * @throws CouldNotSendNotification
      */
     public function send($notifiable, Notification $notification): ?Response
     {
-        // @phpstan-ignore-next-line
         $message = $notification->toWhatsApp($notifiable);
 
         if (! $message->hasRecipient()) {

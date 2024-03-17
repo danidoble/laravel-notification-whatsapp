@@ -1,10 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace NotificationChannels\WhatsApp\Component;
 
 abstract class Button extends Component
 {
     protected int $index = 0;
+
     protected array $parameters = [];
 
     public function toArray(): array
@@ -25,7 +28,7 @@ abstract class Button extends Component
      * We don't do the validation.
      * It's up to the user to follow this guideline
      */
-    public function setIndex(int $index)
+    public function setIndex(int $index): void
     {
         $this->index = $index;
     }
