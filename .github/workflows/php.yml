@@ -1,9 +1,17 @@
 name: Tests
 
-on: [ 'push', 'pull_request' ]
+on:
+  push:
+    branches:
+      - main
+      - '*.x'
+  pull_request:
+
+permissions:
+  contents: read
 
 jobs:
-  ci:
+  tests:
     runs-on: ubuntu-latest
     strategy:
       fail-fast: true
@@ -11,17 +19,19 @@ jobs:
         php: [ 8.1, 8.2, 8.3 ]
 
     name: Tests on PHP ${{ matrix.php }} - ${{ matrix.stability }}
+    timeout-minutes: 10
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php }}
+          extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite, intl, pdo, sqlite, xdebug
           tools: composer:v2, phpstan
-          coverage: xdebug
+          coverage: none
 
       - name: Install Dependencies
         run: composer install --no-interaction --prefer-dist --no-progress --optimize-autoloader
