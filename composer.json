@@ -3,7 +3,6 @@
   "description": "WhatsApp notification channel for Laravel",
   "type": "library",
   "license": "MIT",
-  "version": "v2.0.0",
   "keywords": [
     "whatsapp notification",
     "laravel",
@@ -83,7 +82,7 @@
       "@php vendor/bin/testbench serve"
     ],
     "lint": [
-      "@php vendor/bin/phpstan analyse src tests"
+      "@php vendor/bin/phpstan analyse src tests --level=5"
     ],
     "pint": [
       "@php vendor/bin/pint"

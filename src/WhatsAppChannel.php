@@ -26,6 +26,7 @@ class WhatsAppChannel
      */
     public function send($notifiable, Notification $notification): ?Response
     {
+        // @phpstan-ignore-next-line
         $message = $notification->toWhatsApp($notifiable);
 
         if (! $message->hasRecipient()) {
