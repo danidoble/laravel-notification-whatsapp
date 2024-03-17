@@ -34,7 +34,10 @@ jobs:
           coverage: none
 
       - name: Install Dependencies
-        run: composer install --no-interaction --prefer-dist --no-progress --optimize-autoloader
+        run: composer install --no-interaction --prefer-dist --no-progress
+
+      - name: Install Pest
+        run: composer require pestphp/pest --dev
 
       - name: Lint composer.json
         run: composer validate
