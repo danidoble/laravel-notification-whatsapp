@@ -10,6 +10,6 @@ jobs:
   update:
     permissions:
       contents: write
-    uses: danidoble/.github/.github/workflows/update-changelog.yml@master
+    uses: danidoble/.github/.github/workflows/update-changelog.yml@main
     secrets:
       CHECKOUT_ACTION_TOKEN: ${{ secrets.UPDATE_CHANGELOG }}
