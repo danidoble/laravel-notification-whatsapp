@@ -15,9 +15,7 @@ class WhatsAppChannel
     /**
      * @param  WhatsAppCloudApi  $whatsapp  HTTP WhatsApp Cloud API wrapper
      */
-    public function __construct(private readonly WhatsAppCloudApi $whatsapp)
-    {
-    }
+    public function __construct(private readonly WhatsAppCloudApi $whatsapp) {}
 
     /**
      * Send the given notification.
@@ -41,6 +39,13 @@ class WhatsAppChannel
         }
 
         try {
+            if ($message->type() === 'text') {
+                return $this->whatsapp->sendTextMessage(
+                    $message->recipient(),
+                    $message->getMessage()
+                );
+            }
+
             return $this->whatsapp->sendTemplate(
                 $message->recipient(),
                 $message->configuredName(),

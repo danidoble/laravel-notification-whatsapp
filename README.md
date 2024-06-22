@@ -93,15 +93,16 @@ Component::text($text);
 Component::urlButton($array_of_urls);
 Component::quickReplyButton($array_of_payloads);
 Component::flowButton($flow_token, $array_of_data);
+Component::location($name, $address, $latitude, $longitude);
 ```
 
 Components supported by Whatsapp template sections:
 
-- Header: image, video, document and text (the text accepts currency, datetime and text variables)
+- Header: image, video, document, location and text (the text accepts currency, datetime and text variables)
 - Body: currency, datetime and text
-- Buttons: url and quick reply,
+- Buttons: url and quick reply
 
-### Send a notification
+### Send a notification from a template
 
 To use this package, you need to create a notification class, like `MovieTicketPaid` from the example below, in your
 Laravel application. Make sure to check out [Laravel's documentation](https://laravel.com/docs/master/notifications) for
@@ -145,6 +146,43 @@ class MovieTicketPaid extends Notification
     }
 }
 ```
+
+### Send a text message
+
+You can only send a text message after you've send a template and the user responded.
+
+```php
+<?php
+
+namespace App\Notifications;
+
+use Illuminate\Notifications\Notification;
+use NotificationChannels\WhatsApp\Component;
+use NotificationChannels\WhatsApp\WhatsAppChannel;
+use NotificationChannels\WhatsApp\WhatsAppTextMessage;
+
+class MovieTicketPaid extends Notification
+{
+    /**
+     * Get the notification's delivery channels.
+     *
+     * @param  mixed  $notifiable
+     * @return array
+     */
+    public function via($notifiable)
+    {
+        return [WhatsAppChannel::class];
+    }
+
+    public function toWhatsapp($notifiable)
+    {
+        return WhatsAppTextMessage::create()
+            ->message('Hello, this is a test message')
+            ->to('34676010101');
+    }
+}
+```
+
 
 ## Changelog
 

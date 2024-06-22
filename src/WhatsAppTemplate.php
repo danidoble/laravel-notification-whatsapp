@@ -18,6 +18,11 @@ class WhatsAppTemplate
     protected array $components;
 
     /**
+     * The message type.
+     */
+    protected static string $type = 'template';
+
+    /**
      * @param  string  $to  WhatsApp ID or phone number for the person you want to send a message to.
      * @param  string  $name  Name of the template. @link https://business.facebook.com/wa/manage/message-templates/ Dashboard to manage (create, edit and delete) templates.
      * @param  string  $language  Language code for the template. @link https://developers.facebook.com/docs/whatsapp/api/messages/message-templates#supported-languages See supported language codes.
@@ -110,5 +115,10 @@ class WhatsAppTemplate
     public function hasRecipient(): bool
     {
         return ! empty($this->to);
+    }
+
+    public function type(): string
+    {
+        return self::$type;
     }
 }
