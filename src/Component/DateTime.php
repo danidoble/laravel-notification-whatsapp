@@ -6,9 +6,7 @@ namespace NotificationChannels\WhatsApp\Component;
 
 class DateTime extends Component
 {
-    public function __construct(protected \DateTimeImmutable $dateTime, protected string $format = 'Y-m-d H:i:s')
-    {
-    }
+    public function __construct(protected \DateTimeImmutable $dateTime, protected string $format = 'Y-m-d H:i:s') {}
 
     public function toArray(): array
     {

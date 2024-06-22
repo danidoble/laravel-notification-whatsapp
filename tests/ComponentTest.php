@@ -55,3 +55,9 @@ it('can return a flow button component', function () {
 
     expect($component)->toBeInstanceOf(Component\FlowButton::class);
 });
+
+it('can return a location component', function () {
+    $component = Component::location(name: 'My Place', address: 'Liepaja, Latvia', latitude: 56.51078, longitude: 21.00212);
+
+    expect($component)->toBeInstanceOf(Component\Location::class);
+});

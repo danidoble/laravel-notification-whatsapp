@@ -9,9 +9,7 @@ class Currency extends Component
     /**
      * @param  string  $code  Currency code as defined in ISO 4217.
      */
-    public function __construct(protected float $amount, protected string $code = 'EUR')
-    {
-    }
+    public function __construct(protected float $amount, protected string $code = 'EUR') {}
 
     public function toArray(): array
     {
