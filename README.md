@@ -24,21 +24,28 @@ Check the CHANGELOG.md for more information about the changes.
 
 ## Requirements
 
-- PHP 8.1 or higher
+- PHP 8.2 or higher
 - Laravel 10.0 or higher
 
 ## Contents
 
-- [Installation](#installation)
-    - [Setting up the WhatsApp service](#setting-up-the-WhatsApp-service)
-- [Usage](#usage)
-    - [Available Message methods](#available-message-methods)
-- [Changelog](#changelog)
-- [Testing](#testing)
-- [Security](#security)
-- [Contributing](#contributing)
-- [Credits](#credits)
-- [License](#license)
+- [WhatsApp notification channel for Laravel](#whatsapp-notification-channel-for-laravel)
+  - [Forked from](#forked-from)
+  - [Requirements](#requirements)
+  - [Contents](#contents)
+  - [Installation](#installation)
+    - [Setting up the WhatsApp Cloud API](#setting-up-the-whatsapp-cloud-api)
+  - [Usage](#usage)
+    - [WhatsApp templates sections](#whatsapp-templates-sections)
+    - [Components](#components)
+    - [Send a notification from a template](#send-a-notification-from-a-template)
+    - [Send a text message](#send-a-text-message)
+  - [Changelog](#changelog)
+  - [Testing](#testing)
+  - [Security](#security)
+  - [Contributing](#contributing)
+  - [Credits](#credits)
+  - [License](#license)
 
 ## Installation
 
