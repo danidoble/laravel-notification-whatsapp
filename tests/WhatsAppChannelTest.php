@@ -49,7 +49,6 @@ it('can send a notification', function () {
     ];
     $expectedResponse = new RawResponse($headers, json_encode($body), 200);
 
-    // @phpstan-ignore-next-line
     $response = sendMockNotification($this, $notifiable, $notification, $expectedResponse);
 
     expect($response->body())->toEqual(json_encode($body))
@@ -80,7 +79,6 @@ it('can send a notification if notifiable provide a recipient from route', funct
     ];
     $expectedResponse = new RawResponse($headers, json_encode($body), 200);
 
-    // @phpstan-ignore-next-line
     $response = sendMockNotification($this, $notifiable, $notification, $expectedResponse);
 
     expect($response->body())->toEqual(json_encode($body))
@@ -110,7 +108,6 @@ test('send notification failed', function () {
 
     // @phpstan-ignore-next-line
     $this->expectException(CouldNotSendNotification::class);
-    // @phpstan-ignore-next-line
     $response = sendMockNotification($this, $notifiable, $notification, $expectedResponse);
 
     expect($response)->toBeNull();
